@@ -8,15 +8,15 @@ import { UsersRepository } from './users.repository';
 export class UsersService {
   constructor(private readonly usersRepository: UsersRepository) {}
 
+  private async hashPassword(password: string) {
+    return bcrypt.hash(password, 10);
+  }
+
   async create(createUserInput: CreateUserInput) {
     return this.usersRepository.create({
       ...createUserInput,
       password: await this.hashPassword(createUserInput.password),
     });
-  }
-
-  private async hashPassword(password: string) {
-    return bcrypt.hash(password, 10);
   }
 
   async findAll() {
