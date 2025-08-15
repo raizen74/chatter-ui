@@ -9,6 +9,8 @@ const getCurrentUserByContext = (context: ExecutionContext): User => {
   else if (context.getType<GqlContextType>() === 'graphql') {
     return GqlExecutionContext.create(context).getContext().req.user;  // user supplied by the jwt strategy
   }
+
+  return GqlExecutionContext.create(context).getContext().req.user;
 };
 
 export const CurrentUser = createParamDecorator(
