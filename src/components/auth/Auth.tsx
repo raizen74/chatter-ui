@@ -1,5 +1,7 @@
 import { Button, Stack, TextField } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useGetMe } from "../../hooks/useGetMe";
+import { useNavigate } from "react-router-dom";
 
 interface AuthProps {
   // Define any props if needed
@@ -12,6 +14,15 @@ interface AuthProps {
 const Auth = ({ submitLabel, onSubmit, children, error }: AuthProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { data } = useGetMe(); // reexecuted after we log in, thanks to client.refetchQueries in useLogin.ts
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    if (data) {
+      // check if user is already logged in
+      navigate("/"); // redirect to home if user is logged in
+    }
+  }, [data, navigate]);
 
   return (
     <Stack
