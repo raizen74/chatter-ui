@@ -33,9 +33,9 @@ export class UsersResolver {
   @UseGuards(GqlAuthGuard)
   updateUser(
     @Args('updateUserInput') updateUserInput: UpdateUserInput,
-    @CurrentUser() user: TokenPayload,
+    @CurrentUser() user: TokenPayload,  // extract the current user from the GraphQL context
   ) {
-    return this.usersService.update(user._id, updateUserInput);
+    return this.usersService.update(user._id, updateUserInput);  // the user._id comes from the JWT, so the sender can only update his data
   }
 
   @Mutation(() => User)

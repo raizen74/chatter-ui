@@ -16,7 +16,7 @@ const Auth = ({ submitLabel, onSubmit, children, error }: AuthProps) => {
   const [password, setPassword] = useState("");
   const { data } = useGetMe(); // reexecuted after we log in, thanks to client.refetchQueries in useLogin.ts
   const navigate = useNavigate();
-  
+  // triggered by client.refetchQueries in useLogin.ts
   useEffect(() => {
     if (data) {
       // check if user is already logged in

@@ -13,7 +13,7 @@ const getCurrentUserByContext = (context: ExecutionContext): User => {
   return GqlExecutionContext.create(context).getContext().req.user;
 };
 
-export const CurrentUser = createParamDecorator(
-  (_data: unknown, context: ExecutionContext) =>
+export const CurrentUser = createParamDecorator(  // utility function to create route decorators
+  (_data: unknown, context: ExecutionContext) =>  // context contains the request object, which in turn contains the user returned by the jwt strategy
     getCurrentUserByContext(context),
 );

@@ -9,10 +9,10 @@ import { LocalStrategy } from './strategies/local.strategy';
 
 @Module({
   imports: [
-    UsersModule,
+    UsersModule, // Import UsersModule to use UsersService in LocalStrategy
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => ({
-        secret: configService.getOrThrow('JWT_SECRET'),
+        secret: configService.getOrThrow('JWT_SECRET'),  // secret key for signing the JWT
         signOptions: {
           expiresIn: Number(configService.getOrThrow('JWT_EXPIRATION')),
         },

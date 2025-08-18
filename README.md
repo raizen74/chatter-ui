@@ -1,46 +1,17 @@
-# Getting Started with Create React App
+## Front
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+- React UI with Material UI
+- Apollo Client
+- Feat: when user **login** automatically is redirected to Home -> In `useLogin` hook we call `client.refetchQueries` after a successful user login, which changes the `data` variable in Auth.tsx (`useGetMe` hook reexecutes the graphql query) and triggers the `useEffect` hook that redirects to the Home component
+- Feat: when user **signup** automatically is redirected to Home: `Signup.tsx` component calls `await login({ email, password })` after a successful signup
 
-## Available Scripts
+## Back
 
-In the project directory, you can run:
+GraphQL users.resolver forwards the query to the UsersService which calls UsersRepository that extends AbstractEntityRepository that performs CRUD on MongoDB with mongoose ORM
 
-### `yarn start`
+Strategies are a concept of the passport library.
+Guards are called before the route is called. Guards need to be changed a bit to work with GraphQL, check gql-auth.guard.ts
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+auth.controller.ts operates the route /auth/login and uses the LocalAuthGuard which implements the local strategy, receives email and password, validates user and injects JWT as cookie
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `yarn test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `yarn build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+the GqlAuthGuard implements the jwt strategy, which extracts the JWT from the request and validates it or throws Unauthorized 401 exception, GqlAuthGuard is applied to several routes in graphql resolver

@@ -30,6 +30,7 @@ const useLogin = () => {
     }
     setError("");
     // after the user is logged in, we need to refetch the queries from Apollo Client cache
+    // triggers useEffect hook in Auth.tsx
     await client.refetchQueries({
       include: "active",
     });

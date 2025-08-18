@@ -49,9 +49,9 @@ export class UsersService {
   }
 
   async verifyUser(email: string, password: string) {
-    const user = await this.usersRepository.findOne({ email });
+    const user = await this.usersRepository.findOne({ email });  // if it does not throw an error it means that the user exist
     const passwordIsValid =
-      user && (await bcrypt.compare(password, user.password));
+      user && (await bcrypt.compare(password, user.password));  // compare the password against the hashed password stored in mongodb
     if (!user || !passwordIsValid) {
       throw new UnauthorizedException('Credentials are invalid');
     }

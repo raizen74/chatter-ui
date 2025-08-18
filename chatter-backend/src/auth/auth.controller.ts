@@ -5,6 +5,7 @@ import { AuthService } from './auth.service';
 import { CurrentUser } from './current-user.decorator';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 
+// Operates at /auth/login
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -12,9 +13,9 @@ export class AuthController {
   @Post('login')
   @UseGuards(LocalAuthGuard)
   async login(
-    @CurrentUser() user: User,
+    @CurrentUser() user: User,  // CurrentUser has logic to extract user which is the one returned by the LocalStrategy.validate method
     @Res({ passthrough: true }) response: Response,
   ) {
-    return this.authService.login(user, response);
+    return this.authService.login(user, response);  // return the response with the JWT injected as cookie
   }
 }

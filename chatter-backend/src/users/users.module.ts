@@ -10,6 +10,6 @@ import { UsersService } from './users.service';
     DatabaseModule.forFeature([{ name: User.name, schema: UserSchema }]),
   ],
   providers: [UsersResolver, UsersService, UsersRepository],
-  exports: [UsersService],
+  exports: [UsersService],  // Export UsersService so it can be used in other modules, like AuthModule (local.strategy.ts)
 })
 export class UsersModule {}
