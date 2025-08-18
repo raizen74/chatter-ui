@@ -29,6 +29,7 @@ const useLogin = () => {
       return;
     }
     setError("");
+    // after the user is logged in, we need to refetch the queries from Apollo Client cache
     await client.refetchQueries({
       include: "active",
     });
