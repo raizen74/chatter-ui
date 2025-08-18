@@ -2,8 +2,6 @@ import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
 import { Strategy } from "passport-local";
 import { UsersService } from "src/users/users.service";
-// import { AuthService } from "../auth.service";
-// import { User } from "../../users/entities/user.entity";
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
@@ -17,7 +15,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     try {
       return await this.usersService.verifyUser(email, password);
     } catch (err) {
-      throw new UnauthorizedException(err);
+      throw new UnauthorizedException('Credentials are not valid.');
     }
   }
 }
