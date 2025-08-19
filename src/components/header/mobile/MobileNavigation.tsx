@@ -1,16 +1,16 @@
+import MenuIcon from "@mui/icons-material/Menu";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
+import Typography from "@mui/material/Typography";
 
 import MenuItem from "@mui/material/MenuItem";
 import { useState } from "react";
 
 interface MobileNavigationProps {
-  pages: string[]
+  pages: string[];
 }
-export const MobileNavigation = ({pages}: MobileNavigationProps) => {
+export const MobileNavigation = ({ pages }: MobileNavigationProps) => {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
