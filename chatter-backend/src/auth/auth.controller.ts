@@ -18,4 +18,11 @@ export class AuthController {
   ) {
     return this.authService.login(user, response);  // return the response with the JWT injected as cookie
   }
+
+  @Post('logout')
+  logout(
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    return this.authService.logout(response);
+  }
 }

@@ -31,4 +31,12 @@ export class AuthService {
       expires,
     });  // add a cookie to the response
   }
+
+  // clears the JWT cookie
+  logout(response: Response) {
+    response.cookie('Authentication', '', {
+      httpOnly: true, // Prevents client-side JavaScript from accessing the cookie
+      expires: new Date(), // the cookie gets cleared from the user session
+    }); 
+  }
 }
