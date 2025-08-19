@@ -6,9 +6,11 @@ import Typography from "@mui/material/Typography";
 
 import MenuItem from "@mui/material/MenuItem";
 import { useState } from "react";
+import { Page } from "../../../interfaces/page.interfaces";
+import router from "../../Route";
 
 interface MobileNavigationProps {
-  pages: string[];
+  pages: Page[];
 }
 export const MobileNavigation = ({ pages }: MobileNavigationProps) => {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
@@ -48,8 +50,14 @@ export const MobileNavigation = ({ pages }: MobileNavigationProps) => {
         sx={{ display: { xs: "block", md: "none" } }}
       >
         {pages.map((page) => (
-          <MenuItem key={page} onClick={handleCloseNavMenu}>
-            <Typography sx={{ textAlign: "center" }}>{page}</Typography>
+          <MenuItem
+            key={page.title}
+            onClick={() => {
+              router.navigate(page.path);
+              handleCloseNavMenu();
+            }}
+          >
+            <Typography sx={{ textAlign: "center" }}>{page.title}</Typography>
           </MenuItem>
         ))}
       </Menu>

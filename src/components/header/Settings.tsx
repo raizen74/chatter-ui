@@ -8,6 +8,8 @@ import Typography from "@mui/material/Typography";
 import { useState } from "react";
 import { useLogout } from "../../hooks/useLogout";
 import { onLogout } from "../../utils/logout";
+import { snackVar } from "../../constants/snack";
+import { UNKNOWN_ERROR_SNACK_MESSAGE } from "../../constants/error";
 
 const Settings = () => {
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
@@ -45,9 +47,14 @@ const Settings = () => {
         onClose={handleCloseUserMenu}
       >
           <MenuItem key='logout' onClick={async () => {
-            await logout();  // remove the JWT cookie
-            onLogout(); // redirect the user and clear the client store
-            handleCloseUserMenu()
+            try {
+              await logout();  // remove the JWT cookie
+              onLogout(); // redirect the user and clear the client store
+              handleCloseUserMenu()
+
+            } catch(err) {
+              snackVar(UNKNOWN_ERROR_SNACK_MESSAGE)
+            }
           }}>
             <Typography sx={{ textAlign: "center" }}>logout</Typography>
           </MenuItem>
