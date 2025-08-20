@@ -7,16 +7,29 @@ type User {
   email: String!
 }
 
+type Chat {
+  _id: ID!
+  userId: String!
+  isPrivate: Boolean!
+  userIds: [String!]!
+  name: String
+}
+
 type Query {
   users: [User!]!
   user(_id: String!): User!
   me: User!
+  chats: [Chat!]!
+  chat(id: Int!): Chat!
 }
 
 type Mutation {
   createUser(createUserInput: CreateUserInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
   removeUser: User!
+  createChat(createChatInput: CreateChatInput!): Chat!
+  updateChat(updateChatInput: UpdateChatInput!): Chat!
+  removeChat(id: Int!): Chat!
 }
 
 input CreateUserInput {
@@ -27,4 +40,17 @@ input CreateUserInput {
 input UpdateUserInput {
   email: String
   password: String
+}
+
+input CreateChatInput {
+  isPrivate: Boolean!
+  userIds: [String!]
+  name: String
+}
+
+input UpdateChatInput {
+  isPrivate: Boolean
+  userIds: [String!]
+  name: String
+  id: Int!
 }
