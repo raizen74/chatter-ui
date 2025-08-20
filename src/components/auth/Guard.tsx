@@ -4,6 +4,7 @@ import excludedRoutes from "../../constants/excluded-routes";
 import { authenticatedVar } from "../../constants/authenticated";
 import { snackVar } from "../../constants/snack";
 import { UNKNOWN_ERROR_SNACK_MESSAGE } from "../../constants/error";
+import { usePath } from "../../hooks/usePath";
 
 interface GuardProps {
   children: JSX.Element;
@@ -11,6 +12,7 @@ interface GuardProps {
 
 // receives <RouterProvider router={router} /> as children
 const Guard = ({ children }: GuardProps) => {
+  const path = usePath();
   // useGetMe call will fail when user is unathorized
   const { data: user, error } = useGetMe(); // fetches the current user
 
@@ -31,7 +33,7 @@ const Guard = ({ children }: GuardProps) => {
   // and only render children (<RouterProvider router={router} />) if user is authenticated or route is not excluded
   return (
     <>
-      {excludedRoutes.includes(window.location.pathname)
+      {excludedRoutes.includes(path)
         ? children
         : user && children}
     </>
