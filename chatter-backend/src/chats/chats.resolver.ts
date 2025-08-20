@@ -13,9 +13,9 @@ export class ChatsResolver {
   constructor(private readonly chatsService: ChatsService) {}
 
   @UseGuards(GqlAuthGuard) // Only authenticated users can create chats
-  @Mutation(() => Chat)
+  @Mutation(() => Chat)  // This is returned by the GraphQL mutation
   createChat(
-    @Args('createChatInput') createChatInput: CreateChatInput,
+    @Args('createChatInput') createChatInput: CreateChatInput, // Created in the UI
     @CurrentUser() user: TokenPayload,
   ) {
     return this.chatsService.create(createChatInput, user._id);
