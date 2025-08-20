@@ -15,8 +15,8 @@ export class ChatsService {
     });
   }
 
-  findAll() {
-    return `This action returns all chats`;
+  async findAll() {
+    return this.chatsRepository.find({});  // Pass an empty object to find all chats
   }
 
   findOne(id: number) {

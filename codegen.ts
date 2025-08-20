@@ -8,7 +8,10 @@ const config: CodegenConfig = {
   generates: {
     "src/gql/": {
       preset: "client",
-      plugins: []
+      plugins: [],
+      presetConfig: {
+        fragmentMasking: false, // Disable fragment masking to allow fragments to be used directly in queries
+      },
     }
   }
 };
