@@ -4,6 +4,7 @@
 - Apollo Client
 - Feat: when user **login** automatically is redirected to Home -> In `useLogin` hook we call `client.refetchQueries` after a successful user login, which changes the `data` variable in Auth.tsx (`useGetMe` hook reexecutes the graphql query) and triggers the `useEffect` hook that redirects to the Home component
 - Feat: when user **signup** automatically is redirected to Home: `Signup.tsx` component calls `await login({ email, password })` after a successful signup
+- Use `makeVar` from Apollo Client to mantain authentication state and conditionally render the Header components
 
 ## Back
 

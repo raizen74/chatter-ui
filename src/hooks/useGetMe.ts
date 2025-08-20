@@ -11,7 +11,9 @@ const GET_ME = gql`
 `;
 
 const useGetMe = () => {
-  return useQuery<{me: User}>(GET_ME);
+  return useQuery<{me: User}>(GET_ME, {
+    errorPolicy: "all", // allows us to handle errors gracefully
+  });
 };
 
 export { useGetMe };
