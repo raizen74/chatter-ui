@@ -12,6 +12,7 @@ export class ChatsService {
       ...createChatInput,
       userId,
       userIds: createChatInput.userIds || [],  // userIds is optional, default to empty array if not provided
+      messages: [],  // Initialize messages as an empty array
     });
   }
 
