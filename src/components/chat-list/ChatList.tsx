@@ -30,24 +30,8 @@ const ChatList = () => {
           }}
         >
           {data?.chats.map((chat) => (
-            <ChatListItem name={chat.name} />
+            <ChatListItem chat={chat} />
           ))}
-          <ChatListItem />
-          <ChatListItem />
-          <ChatListItem />
-          <ChatListItem />
-          <ChatListItem />
-          <ChatListItem />
-          <ChatListItem />
-          <ChatListItem />
-          <ChatListItem />
-          <ChatListItem />
-          <ChatListItem />
-          <ChatListItem />
-          <ChatListItem />
-          <ChatListItem />
-          <ChatListItem />
-          <ChatListItem />
         </List>
       </Stack>
     </>

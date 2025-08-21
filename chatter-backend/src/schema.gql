@@ -20,7 +20,7 @@ type Query {
   user(_id: String!): User!
   me: User!
   chats: [Chat!]!
-  chat(id: Int!): Chat!
+  chat(_id: String!): Chat!
 }
 
 type Mutation {
