@@ -1,4 +1,4 @@
-import { Container, createTheme, CssBaseline, Grid } from "@mui/material";
+import { Container, createTheme, CssBaseline } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 import { ApolloProvider } from "@apollo/client";
 import { RouterProvider } from "react-router-dom";
@@ -9,6 +9,7 @@ import Header from "./components/header/Header";
 import CustomizedSnackbar from "./components/snackbar/Snackbar";
 import ChatList from "./components/chat-list/ChatList";
 import { usePath } from "./hooks/usePath";
+import Grid from "@mui/material/Grid"
 
 const darkTheme = createTheme({
   palette: {
@@ -19,7 +20,7 @@ const darkTheme = createTheme({
 const App = () => {
   const path = usePath();
 
-const showChatList = path === "/" || path.includes("chats");
+  const showChatList = path === "/" || path.includes("chats");
 
   return (
     <ApolloProvider client={client}>
@@ -27,18 +28,20 @@ const showChatList = path === "/" || path.includes("chats");
         <CssBaseline />
         <Header />
         <Guard>
-          {showChatList ? (
-            <Grid container>
-              <Grid size={3}>
-                <ChatList />
+          <Container maxWidth='xl' sx={{ marginTop: "1rem" }}>
+            {showChatList ? (
+              <Grid container spacing={5}>
+                <Grid size={{ xs: 12, md: 5, lg: 4, xl: 3 }}>
+                  <ChatList />
+                </Grid>
+                <Grid size={{ xs: 12, md: 7, lg: 8, xl: 9 }}>
+                  <Routes />
+                </Grid>
               </Grid>
-              <Grid container size={9}>
-                <Routes />
-              </Grid>
-            </Grid>
-          ) : (
-            <Routes />
-          )}
+            ) : (
+              <Routes />
+            )}
+          </Container>
         </Guard>
         <CustomizedSnackbar />
       </ThemeProvider>
@@ -47,11 +50,7 @@ const showChatList = path === "/" || path.includes("chats");
 };
 
 const Routes = () => {
-  return (
-    <Container sx={{height: "100%"}}>
-      <RouterProvider router={router} />
-    </Container>
-  );
+  return <RouterProvider router={router} />;
 };
 
 export default App;
