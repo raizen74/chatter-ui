@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import router from "../components/Route";
 
 export const usePath = () => {
-  const [path, setPath] = useState<string>(window.location.pathname);
+  const [path, setPath] = useState(window.location.pathname);
 
   useEffect(() => {
     // Subscribe to route changes and update the path state
