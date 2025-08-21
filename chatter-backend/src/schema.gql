@@ -10,7 +10,7 @@ type User {
 type Message {
   _id: ID!
   content: String!
-  createAt: DateTime!
+  createdAt: DateTime!
   userId: String!
 }
 
@@ -33,6 +33,7 @@ type Query {
   me: User!
   chats: [Chat!]!
   chat(_id: String!): Chat!
+  messages(chatId: String!): [Message!]!
 }
 
 type Mutation {

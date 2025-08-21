@@ -13,7 +13,7 @@ export class Message extends AbstractEntity {
 
   @Field()
   @Prop()
-  createAt: Date;
+  createdAt: Date;
 
   @Field()
   @Prop()
