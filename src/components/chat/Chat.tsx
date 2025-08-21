@@ -18,7 +18,7 @@ const Chat = () => {
   const [message, setMessage] = useState("");
   const chatId = params._id!; // Get the chat ID from the URL parameters
   const { data } = useGetChat({ _id: chatId }); // the bang (!) asserts that _id is not undefined
-  const [createMessage] = useCreateMessage();
+  const [createMessage] = useCreateMessage(chatId);
   const { data: messages } = useGetMessages({ chatId });
 
   return (
