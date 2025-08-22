@@ -27,4 +27,6 @@ Guards are called before the route is called. Guards need to be changed a bit to
 
 `GqlAuthGuard` implements the **jwt strategy**, which extracts the JWT from the request and validates it or throws Unauthorized 401 exception, `GqlAuthGuard` is applied to all routes except `CreateUser` in graphql resolver
 
-GraphQL subscriptions mantain a persistent websocket connection to keep pushing updates to the UI client
+GraphQL subscriptions mantain a persistent websocket connection to keep pushing updates to the UI client, when a user enters a chat it stablishes a websocket connection using the `chatId`
+
+Pushed messages are filtered by `chatId` and not sent to the sender (`userId`)
