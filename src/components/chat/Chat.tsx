@@ -26,14 +26,16 @@ const Chat = () => {
   const chatId = params._id!; // Get the chat ID from the URL parameters
   const { data } = useGetChat({ _id: chatId }); // the bang (!) asserts that _id is not undefined
   // updating the Apollo cache causes all components using that cached data (like the <Box> with messages) to re-render with the latest data
-  const [createMessage] = useCreateMessage(chatId); // updates the apollo cache after creating a message
+  const [createMessage] = useCreateMessage(); // updates the apollo cache after creating a message
   const { data: existingMessages } = useGetMessages({ chatId }); // subscribed to the messages data in Apollo cache, When the cache is updated, Apollo automatically notifies all components using that data
   const [messages, setMessages] = useState<Message[]>([]); // local state to hold messages
   const divRef = useRef<HTMLDivElement>(null); // atatch a component ref to the div
   // works very similarly to usePath, but is more idiomatic in React Router v6 since we are inside of the Router context
   // Chat.tsx is rendered by the Router, so we can use useLocation to get the current location
   const location = useLocation();
-  const { data: latestMessage } = useMessageCreated({ chatId }); // subscribe to new messages
+  
+  useMessageCreated({ chatId }); // subscribe to new messages
+  
   const scrollToBottom = () =>
     divRef.current?.scrollIntoView({ behavior: "smooth" });
 
@@ -44,15 +46,15 @@ const Chat = () => {
     }
   }, [existingMessages]);
 
-  useEffect(() => {
-    const existingLatestMessage = messages[messages.length - 1]?._id;
-    if (
-      latestMessage?.messageCreated && // Check if latestMessage has data on it
-      existingLatestMessage !== latestMessage.messageCreated._id // Prevent adding duplicate messages
-    ) {
-      setMessages([...messages, latestMessage.messageCreated]);
-    }
-  }, [latestMessage, messages]);
+  // useEffect(() => {
+  //   const existingLatestMessage = messages[messages.length - 1]?._id;
+  //   if (
+  //     latestMessage?.messageCreated && // Check if latestMessage has data on it
+  //     existingLatestMessage !== latestMessage.messageCreated._id // Prevent adding duplicate messages
+  //   ) {
+  //     setMessages([...messages, latestMessage.messageCreated]);
+  //   }
+  // }, [latestMessage, messages]);
 
   useEffect(() => {
     setMessage(""); // Reset the message input when the chat changes
