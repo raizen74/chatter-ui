@@ -9,7 +9,12 @@
 - Feat: when user **login** automatically is redirected to Home -> In `useLogin` hook we call `client.refetchQueries` after a successful user login, which changes the `data` variable in Auth.tsx (`useGetMe` hook reexecutes the graphql query) and triggers the `useEffect` hook that redirects to the Home component
 - Feat: when user **signup** automatically is redirected to Home: `Signup.tsx` component calls `await login({ email, password })` after a successful signup
 - Use `makeVar` from Apollo Client to mantain authentication state and conditionally render the Header components
-- Updating the **Apollo client cache** causes all components using that cached data (like the `<Box>` with messages in `Chat.tsx`) to re-render with the latest data, making new message appear instantly. No page refresh is needed.
+- `Chat.tsx`:
+  1. When you call the `useCreateMessage` hook (inside `handleCreateMessage`), you execute a mutation to create a new message.
+  2. In your `useCreateMessage` hook, you have an update function that **manually updates the Apollo cache**: it reads the current messages from the cache, adds the new message, and writes the updated array back to the cache.
+  3. The `useGetMessages` hook in your Chat component is **subscribed to the messages data in the Apollo cache**.
+  4. **When the cache is updated, Apollo automatically notifies all components using that data (including your Chat component).**
+  5. React re-renders the Chat component with the new messages array, so the new message appears in the UI immediately—without a page refresh or manual fetch.
 
 ## Back
 

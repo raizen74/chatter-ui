@@ -15,21 +15,24 @@ import { useCreateMessage } from "../../hooks/useCreateMessage";
 import { useGetChat } from "../../hooks/useGetChat";
 import { useGetMessages } from "../../hooks/useGetMessages";
 import Grid from "@mui/material/Grid"
+import { useMessageCreated } from "../../hooks/useMessageCreated";
 
 const Chat = () => {
+  console.log("Chat component rendered");
   // Extract the chat ID from the URL parameters
   const params = useParams<{ _id: string }>();
   const [message, setMessage] = useState("");
   const chatId = params._id!; // Get the chat ID from the URL parameters
   const { data } = useGetChat({ _id: chatId }); // the bang (!) asserts that _id is not undefined
   // updating the Apollo cache causes all components using that cached data (like the <Box> with messages) to re-render with the latest data
-  const [createMessage] = useCreateMessage(chatId);
-  const { data: messages } = useGetMessages({ chatId });
+  const [createMessage] = useCreateMessage(chatId);  // updates the apollo cache after creating a message
+  const { data: messages } = useGetMessages({ chatId });  // subscribed to the messages data in Apollo cache, When the cache is updated, Apollo automatically notifies all components using that data
   const divRef = useRef<HTMLDivElement>(null); // atatch a component ref to the div
   // works very similarly to usePath, but is more idiomatic in React Router v6 since we are inside of the Router context
   // Chat.tsx is rendered by the Router, so we can use useLocation to get the current location
   const location = useLocation();
-
+  const { data: latestMessage } = useMessageCreated({ chatId });  // subscribe to new messages
+  console.log("latestMessage from subscription:", latestMessage);
   const scrollToBottom = () =>
     divRef.current?.scrollIntoView({ behavior: "smooth" });
 
@@ -39,6 +42,7 @@ const Chat = () => {
   }, [location, messages]); // Scroll to the bottom when the location changes (i.e., when the chat changes)
 
   const handleCreateMessage = async () => {
+    // execute a mutation to create a new message
     await createMessage({
       variables: { createMessageInput: { content: message, chatId } },
     });

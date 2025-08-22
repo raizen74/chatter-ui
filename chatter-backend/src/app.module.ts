@@ -15,6 +15,12 @@ import { ChatsModule } from './chats/chats.module';
 import { PubSubModule } from './common/pubsub/pubsub.module';
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      validationSchema: Joi.object({
+        MONGODB_URI: Joi.string().required(),
+      }),
+    }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
@@ -23,12 +29,6 @@ import { PubSubModule } from './common/pubsub/pubsub.module';
       subscriptions: {
         'graphql-ws': true // listen for GraphQL subscriptions on /graphql
       },
-    }),
-    ConfigModule.forRoot({
-      isGlobal: true,
-      validationSchema: Joi.object({
-        MONGODB_URI: Joi.string().required(),
-      }),
     }),
     DatabaseModule,
     UsersModule,

@@ -1,16 +1,16 @@
 import { Inject, UseGuards } from '@nestjs/common';
-import { Args, Mutation, Resolver, Query, Subscription } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
+import { PubSub } from 'graphql-subscriptions';
 import { CurrentUser } from 'src/auth/current-user.decorator';
 import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';
 import type { TokenPayload } from 'src/auth/token-payload.interface';
+import { PUB_SUB } from 'src/common/constants/injection-token';
+import { MESSAGE_CREATED } from './constants/pubsub-triggers';
 import { CreateMessageInput } from './dto/create-message.input';
 import { GetMessagesArgs } from './dto/get-messages.args';
+import { MessageCreatedArgs } from './dto/message-created.args';
 import { Message } from './entities/message.entity';
 import { MessagesService } from './messages.service';
-import { PUB_SUB } from 'src/common/constants/injection-token';
-import { PubSub } from 'graphql-subscriptions';
-import { MESSAGE_CREATED } from './constants/pubsub-triggers';
-import { MessageCreatedArgs } from './dto/message-created.args';
 
 @Resolver(() => Message) // Returns the Message entity type for GraphQL type and adds it to the schema
 export class MessagesResolver {
@@ -44,6 +44,6 @@ export class MessagesResolver {
   })
   messageCreated(@Args() _messageCreatedArgs: MessageCreatedArgs) { // MessageCreatedArgs is part of the Schema and will be provided in these parameter. messageCreated is the name of the subscription
     // When we publish we must provide the same MESSAGE_CREATED event name
-    this.pubSub.asyncIterator(MESSAGE_CREATED); // Subscribes the calling client to this trigger, when new messages are created they will be sent to the subscribing clients
+    return this.pubSub.asyncIterableIterator(MESSAGE_CREATED); // Subscribes the calling client to this trigger, when new messages are created they will be sent to the subscribing clients
   }
 }

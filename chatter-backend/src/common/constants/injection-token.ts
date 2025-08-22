@@ -1,1 +1,1 @@
-export const PUB_SUB = 'PUBSUB';
+export const PUB_SUB = 'PUB_SUB';

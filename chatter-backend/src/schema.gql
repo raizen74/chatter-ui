@@ -12,6 +12,7 @@ type Message {
   content: String!
   createdAt: DateTime!
   userId: String!
+  chatId: String!
 }
 
 """
@@ -72,4 +73,8 @@ input UpdateChatInput {
 input CreateMessageInput {
   content: String!
   chatId: String!
+}
+
+type Subscription {
+  messageCreated(chatId: String!): Message!
 }
