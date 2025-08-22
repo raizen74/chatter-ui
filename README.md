@@ -1,6 +1,6 @@
 # Real-time chat web application
 
-- React UI + Material UI and Apollo Client
+- React UI + Material UI and Apollo Client (cache)
 - NestJS + Apollo GraphQL server
 - MongoDB
 
@@ -13,11 +13,13 @@
 
 ## Back
 
-GraphQL users.resolver forwards the query to the UsersService which calls UsersRepository that extends AbstractEntityRepository that performs CRUD on MongoDB with mongoose ORM
+GraphQL `users.resolver.ts` forwards the query to the `UsersService` which calls `UsersRepository` that extends `AbstractEntityRepository` that performs CRUD on MongoDB with mongoose ORM
 
-Strategies are a concept of the passport library.
-Guards are called before the route is called. Guards need to be changed a bit to work with GraphQL, check gql-auth.guard.ts
+Strategies are a concept of the `passport` library.
+Guards are called before the route is called. Guards need to be changed a bit to work with GraphQL, check `gql-auth.guard.ts`
 
-auth.controller.ts operates the route /auth/login and uses the LocalAuthGuard which implements the local strategy, receives email and password, validates user and injects JWT as cookie
+`auth.controller.ts` operates the route **/auth/login** and uses the `LocalAuthGuard` which implements the **local strategy**, receives email and password, validates user in MongoDB and **injects JWT as cookie**
 
-the GqlAuthGuard implements the jwt strategy, which extracts the JWT from the request and validates it or throws Unauthorized 401 exception, GqlAuthGuard is applied to several routes in graphql resolver
+`GqlAuthGuard` implements the **jwt strategy**, which extracts the JWT from the request and validates it or throws Unauthorized 401 exception, `GqlAuthGuard` is applied to all routes except `CreateUser` in graphql resolver
+
+GraphQL subscriptions mantain a persistent websocket connection to keep pushing updates to the UI client

@@ -1,0 +1,1 @@
+export const MESSAGE_CREATED = 'messageCreated'; // Event name for message creation in PubSub

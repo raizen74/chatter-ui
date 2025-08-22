@@ -12,6 +12,7 @@ import { AuthModule } from './auth/auth.module';
 import { DatabaseModule } from './common/database/database.module';
 import { UsersModule } from './users/users.module';
 import { ChatsModule } from './chats/chats.module';
+import { PubSubModule } from './common/pubsub/pubsub.module';
 @Module({
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -19,6 +20,9 @@ import { ChatsModule } from './chats/chats.module';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       playground: false,
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
+      subscriptions: {
+        'graphql-ws': true // listen for GraphQL subscriptions on /graphql
+      },
     }),
     ConfigModule.forRoot({
       isGlobal: true,
@@ -52,6 +56,7 @@ import { ChatsModule } from './chats/chats.module';
     }),
     AuthModule,
     ChatsModule,
+    PubSubModule,
     // Other modules can be imported here
   ],
   controllers: [AppController],
