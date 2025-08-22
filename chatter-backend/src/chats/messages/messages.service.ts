@@ -7,9 +7,15 @@ import { GetMessagesArgs } from './dto/get-messages.args';
 import { PUB_SUB } from 'src/common/constants/injection-token';
 import { PubSub } from 'graphql-subscriptions';
 import { MESSAGE_CREATED } from './constants/pubsub-triggers';
+import { MessageCreatedArgs } from './dto/message-created.args';
+import { ChatsService } from '../chats.service';
 @Injectable()
 export class MessagesService {
-  constructor(private readonly chatsRepository: ChatsRepository, @Inject(PUB_SUB) private readonly pubSub: PubSub) {}
+  constructor(
+    private readonly chatsRepository: ChatsRepository,
+    private readonly chatsService: ChatsService,
+    @Inject(PUB_SUB) private readonly pubSub: PubSub,
+  ) {}
   async createMessage({ content, chatId }: CreateMessageInput, userId: string) {
     const message: Message = {
       content,
@@ -21,7 +27,7 @@ export class MessagesService {
     await this.chatsRepository.findOneAndUpdate(
       {
         _id: chatId,
-        ...this.userChatFilter(userId), // Ensures the user is allowed to push messages
+        ...this.chatsService.userChatFilter(userId), // Ensures the user is allowed to push messages
       },
       {
         $push: { messages: message },
@@ -31,24 +37,20 @@ export class MessagesService {
     return message; // Return the created message
   }
 
-  private userChatFilter(userId: string) {
-    return {
-      $or: [
-        { userId }, // The owner of the chat can push messages
-        // Users in the chat can also push messages
-        {
-          userIds: {
-            $in: [userId],
-          },
-        },
-      ],
-    };
+  async getMessages({ chatId }: GetMessagesArgs, userId: string) {
+    return (
+      await this.chatsRepository.findOne({
+        _id: chatId,
+        ...this.chatsService.userChatFilter(userId),
+      })
+    ).messages; // Returns the messages of the chat if the user is allowed to access it
   }
 
-  async getMessages({ chatId }: GetMessagesArgs, userId: string) {
-    return (await this.chatsRepository.findOne({
+  async messageCreated({ chatId }: MessageCreatedArgs, userId: string) {
+    await this.chatsRepository.findOne({
       _id: chatId,
-      ...this.userChatFilter(userId),
-    })).messages; // Returns the messages of the chat if the user is allowed to access it
+      ...this.chatsService.userChatFilter(userId),
+    }); // Ensure the chat exists
+    return this.pubSub.asyncIterableIterator(MESSAGE_CREATED); // Subscribes the calling client to this trigger, when new messages are created they will be sent to the subscribing clients
   }
 }

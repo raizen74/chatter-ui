@@ -13,6 +13,6 @@ import { MessagesModule } from './messages/messages.module';
     forwardRef(() => MessagesModule),  // Its part of the application's chat functionality, so we import it here
   ],
   providers: [ChatsResolver, ChatsService, ChatsRepository],
-  exports: [ChatsRepository], // Exporting the repository for use in the messages module when we import this module
+  exports: [ChatsRepository, ChatsService], // Exporting the repository for use in the messages module when we import this module
 })
 export class ChatsModule {}

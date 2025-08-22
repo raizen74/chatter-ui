@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Response } from 'express';
+import type { Request, Response } from 'express';
 import { User } from 'src/users/entities/user.entity';
 import { TokenPayload } from './token-payload.interface';
 import { JwtService } from '@nestjs/jwt';
@@ -30,6 +30,16 @@ export class AuthService {
       // secure: process.env.NODE_ENV === 'production',
       expires,
     });  // add a cookie to the response
+  }
+
+  verifyWs(request: Request): TokenPayload {
+    const cookies: string[] = request.headers.cookie?.split('; ') ?? [];
+    const authCookie = cookies.find((cookie) => cookie.includes('Authentication'));
+    const jwt = authCookie?.split('Authentication=')[1];
+    if (!jwt) {
+      throw new Error('Authentication cookie not found');
+    }
+    return this.jwtService.verify(jwt)
   }
 
   // clears the JWT cookie

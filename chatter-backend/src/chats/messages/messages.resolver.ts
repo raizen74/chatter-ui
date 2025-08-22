@@ -14,7 +14,10 @@ import { MessagesService } from './messages.service';
 
 @Resolver(() => Message) // Returns the Message entity type for GraphQL type and adds it to the schema
 export class MessagesResolver {
-  constructor(private readonly messagesService: MessagesService, @Inject(PUB_SUB) private readonly pubSub: PubSub) {}
+  constructor(
+    private readonly messagesService: MessagesService,
+    @Inject(PUB_SUB) private readonly pubSub: PubSub,
+  ) {}
 
   @Mutation(() => Message)
   @UseGuards(GqlAuthGuard) // Protects the mutation with a GraphQL authentication guard
@@ -25,7 +28,7 @@ export class MessagesResolver {
     return this.messagesService.createMessage(createMessageInput, user._id);
   }
 
-  @Query(() => [Message], {name: "messages"})  // Returns an array of Message entities
+  @Query(() => [Message], { name: 'messages' }) // Returns an array of Message entities
   @UseGuards(GqlAuthGuard) // Protects the query with a GraphQL authentication guard
   async getMessages(
     @Args() getMessagesArgs: GetMessagesArgs, // Accepts arguments for fetching messages
@@ -34,16 +37,24 @@ export class MessagesResolver {
     return this.messagesService.getMessages(getMessagesArgs, user._id);
   }
 
-   // Return type for the subscription
+  // Return type for the subscription
   @Subscription(() => Message, {
     // variables are the arguments passed to the subscription when first subscribed
-    filter: (payload, variables) => {
+    filter: (payload, variables, context) => {
+      const userId = context.req.user._id; // context is the context object created in app.module.ts onConnect function
       // Filter the messages based on the chatId provided in the variables
-      return payload.messageCreated.chatId === variables.chatId;  // Only return messages for the specific chatId
-    }
+      return (
+        payload.messageCreated.chatId === variables.chatId &&
+        userId !== payload.messageCreated.userId
+      ); // Only return messages for the specific chatId
+      // and do not send the message to the user who created it
+    },
   })
-  messageCreated(@Args() _messageCreatedArgs: MessageCreatedArgs) { // MessageCreatedArgs is part of the Schema and will be provided in these parameter. messageCreated is the name of the subscription
-    // When we publish we must provide the same MESSAGE_CREATED event name
-    return this.pubSub.asyncIterableIterator(MESSAGE_CREATED); // Subscribes the calling client to this trigger, when new messages are created they will be sent to the subscribing clients
+  messageCreated(
+    @Args() messageCreatedArgs: MessageCreatedArgs,
+    @CurrentUser() user: TokenPayload,
+  ) {
+    // MessageCreatedArgs is part of the Schema and will be provided in these parameter. messageCreated is the name of the subscription
+    return this.messagesService.messageCreated(messageCreatedArgs, user._id); // userId is not needed here as we filter in the filter function above
   }
 }
