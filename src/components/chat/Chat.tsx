@@ -23,6 +23,7 @@ const Chat = () => {
   // Extract the chat ID from the URL parameters
   const params = useParams<{ _id: string }>();
   const chatId = params._id!; // the bang (!) asserts that _id is not undefined
+  console.log("Chat id: ", chatId)
   const [message, setMessage] = useState("");
   // const [messages, setMessages] = useState<Message[]>([]); // local state to hold messages
   const { data } = useGetChat({ _id: chatId });

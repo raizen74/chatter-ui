@@ -14,6 +14,7 @@ interface ChatListProps {
 }
 
 const ChatListItem = ({ chat, selected }: ChatListProps) => {
+  console.log("chat.latestMessage: ",chat.latestMessage)
   return (
     <>
       <ListItem alignItems='flex-start' disablePadding>
@@ -36,7 +37,7 @@ const ChatListItem = ({ chat, selected }: ChatListProps) => {
                 >
                   {chat.latestMessage?.user.username || ""}
                 </Typography>
-                {" " + chat.latestMessage?.content || ""}
+                {" " + (chat.latestMessage?.content || "")}
               </>
             }
           />
