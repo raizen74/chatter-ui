@@ -5,7 +5,6 @@ import { Prop, Schema } from "@nestjs/mongoose";
 import { Types } from "mongoose";
 import { AbstractEntity } from "src/common/database/abstract.entity";
 
-// @ObjectType()
 // MessageDocument is the schema stored in MongoDB
 @Schema()
 export class MessageDocument extends AbstractEntity {

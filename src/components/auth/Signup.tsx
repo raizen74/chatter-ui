@@ -1,4 +1,4 @@
-import { Link as MUILink } from "@mui/material";
+import { Link as MUILink, TextField } from "@mui/material";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { UNKNOWN_ERROR_MESSAGE } from "../../constants/error";
@@ -9,6 +9,7 @@ import Auth from "./Auth";
 
 const Signup = () => {
   const [createUser] = useCreateUser();
+  const [username, setUsername] = useState("");
   const [error, setError] = useState("");
   const { login } = useLogin();
 
@@ -16,6 +17,17 @@ const Signup = () => {
     <Auth
       submitLabel='Signup'
       error={error}
+      extraFields={[
+        <TextField
+          type='email'
+          label='Username'
+          variant='outlined'
+          value={username}
+          onChange={(event) => setUsername(event.target.value)}
+          error={!!error} //coarse error, if undefined or null then it will be false
+          helperText={error}
+        />,
+      ]}
       onSubmit={async ({ email, password }) => {
         console.log(email, password);
         try {
@@ -23,6 +35,7 @@ const Signup = () => {
             variables: {
               createUserInput: {
                 email,
+                username,
                 password,
               },
             },

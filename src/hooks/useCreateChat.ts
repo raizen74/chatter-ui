@@ -19,7 +19,8 @@ const useCreateChat = () => {
         chats(existingChats = []) {
           const newChatRef = cache.writeFragment({
             data: data?.createChat,
-            fragment: ChatFragment
+            fragment: ChatFragment,
+            fragmentName: "ChatFragment"  // required since it nests another fragment
           }) // write directly to the cache
           return [...existingChats, newChatRef ] // what gets returned here is what is write in the apollo client cache
         }

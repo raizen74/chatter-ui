@@ -9,6 +9,10 @@ export class User extends AbstractEntity {
   @Field()  // This field is exposed in GraphQL
   email: string;
 
+  @Prop()
+  @Field()  // This field is exposed in GraphQL
+  username: string;
+
   @Prop() // This field is not exposed in GraphQL, but is used for MongoDB storage
   password: string;
 }

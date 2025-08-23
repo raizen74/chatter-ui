@@ -21,7 +21,7 @@ export class ChatsService {
     const chats = await this.chatsRepository.model.aggregate([
       ...prePipelineStages,
       { $set: { latestMessage: { $arrayElemAt: ['$messages', -1] } } },
-      { $unset: '$messages' },
+      { $unset: 'messages' },
       {
         $lookup: {  // retrieve the user from users database that has sent the latestMessage
           from: 'users',

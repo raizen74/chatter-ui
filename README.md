@@ -30,4 +30,4 @@ GraphQL subscriptions mantain a persistent websocket connection to keep pushing 
 
 Pushed messages are filtered by `chatId` and not sent to the sender (`userId`)
 
-Define the `ChatDocument` schema as an aggregation of `MessageDocument` and execute **MongoDB aggregations** in the chats and messages services layers to operate these schemas
+ReModel the `ChatDocument` MongoDB schema as an aggregation of `MessageDocument` and execute **MongoDB aggregations** in the chats and messages service layers to operate these schemas

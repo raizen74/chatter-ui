@@ -5,13 +5,14 @@
 type User {
   _id: ID!
   email: String!
+  username: String!
 }
 
 type Message {
   _id: ID!
   content: String!
   createdAt: DateTime!
-  userId: String!
+  user: User!
   chatId: String!
 }
 
@@ -22,10 +23,8 @@ scalar DateTime
 
 type Chat {
   _id: ID!
-  userId: String!
-  isPrivate: Boolean!
-  userIds: [String!]!
-  name: String
+  name: String!
+  latestMessage: Message
 }
 
 type Query {
@@ -49,23 +48,21 @@ type Mutation {
 
 input CreateUserInput {
   email: String!
+  username: String!
   password: String!
 }
 
 input UpdateUserInput {
   email: String
+  username: String
   password: String
 }
 
 input CreateChatInput {
-  isPrivate: Boolean!
-  userIds: [String!]
-  name: String
+  name: String!
 }
 
 input UpdateChatInput {
-  isPrivate: Boolean
-  userIds: [String!]
   name: String
   id: Int!
 }
