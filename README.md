@@ -10,9 +10,9 @@
 - Feat: when user **signup** automatically is redirected to Home: `Signup.tsx` component calls `await login({ email, password })` after a successful signup
 - Use `makeVar` from Apollo Client to mantain authentication state and conditionally render the Header components
 - `Chat.tsx`:
-  1. When you call the `useCreateMessage` hook (inside `handleCreateMessage`), you execute a mutation (`CreateMessage`) to create a new message. In your `useCreateMessage` hook, you have an update function that **manually updates the Apollo cache**: it reads the current messages from the cache, adds the new message, and writes the updated array back to the cache.
-  2. The `useMessageCreated` hook performs GraphQL websocket subscription and manually updates the apollo client cache every time a new message is received.
-  3. The `useGetMessages` hook in your Chat component is **subscribed to the messages data in the Apollo cache**. It retrieves the current messages in the cache automatically when the cache is updated `existingMessages`.
+  1. When you call the `useCreateMessage` hook (inside `handleCreateMessage`), you execute a mutation (`CreateMessage`) to create a new message. In your `useCreateMessage` hook, you have an update function that **manually updates the Apollo client cache**: it reads the current messages from the cache, adds the new message, and writes the updated array back to the cache.
+  2. The `useMessageCreated` hook performs GraphQL websocket subscription and **manually updates the Apollo client cache** every time a new message is received.
+  3. The `useGetMessages` hook in your Chat component is **subscribed to the messages data in the Apollo cache**. It retrieves the current `messages` in the cache automatically when the cache is updated.
   4. React re-renders the Chat component with the new messages array, so the new message appears in the UI immediately—without a page refresh or manual fetch.
 
 ## Back
@@ -29,3 +29,5 @@ Guards are called before the route is called. Guards need to be changed a bit to
 GraphQL subscriptions mantain a persistent websocket connection to keep pushing updates to the UI client, when a user enters a chat it stablishes a websocket connection using the `chatId`
 
 Pushed messages are filtered by `chatId` and not sent to the sender (`userId`)
+
+Define the `ChatDocument` schema as an aggregation of `MessageDocument` and execute **MongoDB aggregations** in the chats and messages services layers to operate these schemas

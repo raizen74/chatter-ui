@@ -13,22 +13,22 @@ export class ChatsResolver {
   constructor(private readonly chatsService: ChatsService) {}
 
   @UseGuards(GqlAuthGuard) // Only authenticated users can create chats
-  @Mutation(() => Chat)  // This is returned by the GraphQL mutation
-  createChat(
+  @Mutation(() => Chat)  // Chat entity is returned by the GraphQL mutation
+  async createChat(
     @Args('createChatInput') createChatInput: CreateChatInput, // Created in the UI
     @CurrentUser() user: TokenPayload,
-  ) {
+  ): Promise<Chat> {
     return this.chatsService.create(createChatInput, user._id);
   }
 
   @UseGuards(GqlAuthGuard) // Only authenticated users can create chats
-  @Query(() => [Chat], { name: 'chats' })
-  findAll(@CurrentUser() user: TokenPayload ) {
-    return this.chatsService.findAll(user._id);
+  @Query(() => [Chat], { name: 'chats' })  // Array of Chat entities is returned by the GraphQL mutation
+  async findAll(): Promise<Chat[]> {
+    return this.chatsService.findMany();
   }
 
   @Query(() => Chat, { name: 'chat' })
-  findOne(@Args('_id') _id: string) {
+  async findOne(@Args('_id') _id: string): Promise<Chat> {
     return this.chatsService.findOne(_id);
   }
 

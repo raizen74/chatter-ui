@@ -3,12 +3,13 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { AbstractEntityRepository } from 'src/common/database/abstract.repository';
 import { Chat } from './entities/chat.entity';
+import { ChatDocument } from './entities/chat.document';
 
 @Injectable()
-export class ChatsRepository extends AbstractEntityRepository<Chat> {
+export class ChatsRepository extends AbstractEntityRepository<ChatDocument> {
   protected readonly logger = new Logger(ChatsRepository.name);
 
-  constructor(@InjectModel(Chat.name) chatModel: Model<Chat>) {
+  constructor(@InjectModel(Chat.name) chatModel: Model<ChatDocument>) {
     super(chatModel);
   }
 
