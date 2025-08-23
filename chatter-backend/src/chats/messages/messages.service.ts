@@ -66,11 +66,11 @@ export class MessagesService {
     ]);
   }
 
-  async messageCreated({ chatId }: MessageCreatedArgs) {
-    await this.chatsRepository.findOne({
-      _id: chatId,
-      // ...this.chatsService.userChatFilter(userId),
-    }); // Ensure the chat exists
+  async messageCreated() {
+    // await this.chatsRepository.findOne({
+    //   _id: chatId,
+    //   // ...this.chatsService.userChatFilter(userId),
+    // }); // Ensure the chat exists
     return this.pubSub.asyncIterableIterator(MESSAGE_CREATED); // Subscribes the calling client to this trigger, when new messages are created they will be sent to the subscribing clients
   }
 }

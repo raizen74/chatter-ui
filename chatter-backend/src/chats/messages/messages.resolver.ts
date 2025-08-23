@@ -37,22 +37,24 @@ export class MessagesResolver {
   // Return type for the subscription
   @Subscription(() => Message, {
     // variables are the arguments passed to the subscription when first subscribed
-    filter: (payload, variables, context) => {
+    filter: (payload, variables: MessageCreatedArgs, context) => {
       const userId = context.req.user._id; // context is the context object created in app.module.ts onConnect function
       const message: Message = payload.messageCreated
       // Filter the messages based on the chatId provided in the variables
       return (
-        message.chatId === variables.chatId &&
+        // message.chatId === variables.chatId &&
+        // The UI sends an array of chatIds that wants to listen to and be alerted about new messages in any chat in the array
+        variables.chatIds.includes(message.chatId) &&
         userId !== message.user._id.toHexString()
       ); // Only return messages for the specific chatId
       // and do not send the message to the user who created it
     },
   })
   messageCreated(
-    @Args() messageCreatedArgs: MessageCreatedArgs,
+    @Args() _messageCreatedArgs: MessageCreatedArgs,
     // @CurrentUser() user: TokenPayload,
   ) {
     // MessageCreatedArgs is part of the Schema and will be provided in these parameter. messageCreated is the name of the subscription
-    return this.messagesService.messageCreated(messageCreatedArgs); // userId is not needed here as we filter in the filter function above
+    return this.messagesService.messageCreated(); // userId is not needed here as we filter in the filter function above
   }
 }

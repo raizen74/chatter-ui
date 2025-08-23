@@ -15,7 +15,7 @@ import { useLocation, useParams } from "react-router-dom";
 import { useCreateMessage } from "../../hooks/useCreateMessage";
 import { useGetChat } from "../../hooks/useGetChat";
 import { useGetMessages } from "../../hooks/useGetMessages";
-import { useMessageCreated } from "../../hooks/useMessageCreated";
+// import { useMessageCreated } from "../../hooks/useMessageCreated";
 // import { Message } from "../../gql/graphql";
 
 const Chat = () => {
@@ -29,7 +29,7 @@ const Chat = () => {
   const { data } = useGetChat({ _id: chatId });
   // updating the Apollo cache causes all components using that cached data (like the <Box> with messages) to re-render with the latest data
   const [createMessage] = useCreateMessage(); // Creates a GraphQL CreateMessage mutation and updates the apollo cache after creating a message
-  useMessageCreated({ chatId }); // triggers a websocket subscription to new messages in this chat and updates the Apollo cache when a new message is created
+  // useMessageCreated({ chatId }); // triggers a websocket subscription to new messages in this chat and updates the Apollo cache when a new message is created
   const { data: messages } = useGetMessages({ chatId }); // subscribes to the chatId messages data in Apollo cache. When the cache is updated, Apollo automatically notifies all components using that data
   const divRef = useRef<HTMLDivElement>(null); // atatch a component ref to the div
   // works very similarly to usePath, but is more idiomatic in React Router v6 since we are inside of the Router context
@@ -71,7 +71,6 @@ const Chat = () => {
       scrollToBottom();
     }
   };
-
   return (
     <Stack sx={{ height: "100%", justifyContent: "space-between" }}>
       <h1>{data?.chat.name}</h1>

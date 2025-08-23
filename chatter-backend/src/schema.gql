@@ -73,5 +73,5 @@ input CreateMessageInput {
 }
 
 type Subscription {
-  messageCreated(chatId: String!): Message!
+  messageCreated(chatIds: [String!]!): Message!
 }

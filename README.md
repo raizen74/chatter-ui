@@ -15,6 +15,8 @@
   3. The `useGetMessages` hook in your Chat component is **subscribed to the messages data in the Apollo cache**. It retrieves the current `messages` in the cache automatically when the cache is updated.
   4. React re-renders the Chat component with the new messages array, so the new message appears in the UI immediately—without a page refresh or manual fetch.
 
+- Update the Apollo Client cache for every `latestMessage` send to the chat and received from the websocket connection to automatically display it in the `ChatListItem` as well as the `user.name` of the sender
+
 ## Back
 
 GraphQL `users.resolver.ts` forwards the query to the `UsersService` which calls `UsersRepository` that extends `AbstractEntityRepository` that performs CRUD on MongoDB with mongoose ORM

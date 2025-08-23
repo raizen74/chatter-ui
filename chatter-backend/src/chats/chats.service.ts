@@ -44,9 +44,11 @@ export class ChatsService {
   }
 
   async findOne(_id: string) {
+    console.log("chatid:", _id)
     const chats = await this.findMany([
       { $match: { chatId: new Types.ObjectId(_id) } },  // prePipelineStages variable of findMany, only return the latestMessage of the given chat
     ]);
+    console.log('chats', chats)
     if (!chats[0]) {
       throw new NotFoundException(`No chat was found with ID ${_id}`);
     }

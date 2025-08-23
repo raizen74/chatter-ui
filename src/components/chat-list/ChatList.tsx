@@ -6,12 +6,15 @@ import ChatListAdd from "./chat-list-add/ChatListAdd";
 import ChatListHeader from "./chat-list-header/ChatListHeader";
 import ChatListItem from "./chat-list-item/ChatListItem";
 import { usePath } from "../../hooks/usePath";
+import { useMessageCreated } from "../../hooks/useMessageCreated";
 
 const ChatList = () => {
   const [chatListAddVisible, setChatListAddVisible] = useState(false);
   const [selectedChatId, setSelectedChatId] = useState("");
   const { data } = useGetChats();
   const path = usePath(); // listen for path changes
+
+  useMessageCreated({chatIds: data?.chats.map((chat) => chat._id) || []}) // triggers a websocket subscription to new messages in this chat and updates the Apollo cache when a new message is created
 
   useEffect(() => {
     const pathSplit = path.split("chats/");
@@ -38,7 +41,15 @@ const ChatList = () => {
             overflowY: "auto",
           }}
         >
-          {data?.chats
+          {data?.chats && [...data.chats].sort((chatA, chatB) => {
+            if (!chatA.latestMessage) {
+              return -1
+            }
+            return (
+              new Date(chatA.latestMessage?.createdAt).getTime() -
+              new Date(chatB.latestMessage?.createdAt).getTime()
+            )
+          })
             .map((chat) => (
               <ChatListItem
                 chat={chat}
