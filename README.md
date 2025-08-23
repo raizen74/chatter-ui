@@ -10,11 +10,10 @@
 - Feat: when user **signup** automatically is redirected to Home: `Signup.tsx` component calls `await login({ email, password })` after a successful signup
 - Use `makeVar` from Apollo Client to mantain authentication state and conditionally render the Header components
 - `Chat.tsx`:
-  1. When you call the `useCreateMessage` hook (inside `handleCreateMessage`), you execute a mutation to create a new message.
-  2. In your `useCreateMessage` hook, you have an update function that **manually updates the Apollo cache**: it reads the current messages from the cache, adds the new message, and writes the updated array back to the cache.
-  3. The `useGetMessages` hook in your Chat component is **subscribed to the messages data in the Apollo cache**.
-  4. **When the cache is updated, Apollo automatically notifies all components using that data (including your Chat component).**
-  5. React re-renders the Chat component with the new messages array, so the new message appears in the UI immediately—without a page refresh or manual fetch.
+  1. When you call the `useCreateMessage` hook (inside `handleCreateMessage`), you execute a mutation (`CreateMessage`) to create a new message. In your `useCreateMessage` hook, you have an update function that **manually updates the Apollo cache**: it reads the current messages from the cache, adds the new message, and writes the updated array back to the cache.
+  2. The `useMessageCreated` hook performs GraphQL websocket subscription and manually updates the apollo client cache every time a new message is received.
+  3. The `useGetMessages` hook in your Chat component is **subscribed to the messages data in the Apollo cache**. It retrieves the current messages in the cache automatically when the cache is updated `existingMessages`.
+  4. React re-renders the Chat component with the new messages array, so the new message appears in the UI immediately—without a page refresh or manual fetch.
 
 ## Back
 

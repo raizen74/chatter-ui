@@ -9,42 +9,41 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import Grid from "@mui/material/Grid";
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { useCreateMessage } from "../../hooks/useCreateMessage";
 import { useGetChat } from "../../hooks/useGetChat";
 import { useGetMessages } from "../../hooks/useGetMessages";
-import Grid from "@mui/material/Grid";
 import { useMessageCreated } from "../../hooks/useMessageCreated";
-import { Message } from "../../gql/graphql";
+// import { Message } from "../../gql/graphql";
 
 const Chat = () => {
   console.log("Chat.tsx rendered");
   // Extract the chat ID from the URL parameters
   const params = useParams<{ _id: string }>();
+  const chatId = params._id!; // the bang (!) asserts that _id is not undefined
   const [message, setMessage] = useState("");
-  const chatId = params._id!; // Get the chat ID from the URL parameters
-  const { data } = useGetChat({ _id: chatId }); // the bang (!) asserts that _id is not undefined
+  // const [messages, setMessages] = useState<Message[]>([]); // local state to hold messages
+  const { data } = useGetChat({ _id: chatId });
   // updating the Apollo cache causes all components using that cached data (like the <Box> with messages) to re-render with the latest data
-  const [createMessage] = useCreateMessage(); // updates the apollo cache after creating a message
-  const { data: existingMessages } = useGetMessages({ chatId }); // subscribed to the messages data in Apollo cache, When the cache is updated, Apollo automatically notifies all components using that data
-  const [messages, setMessages] = useState<Message[]>([]); // local state to hold messages
+  const [createMessage] = useCreateMessage(); // Creates a GraphQL CreateMessage mutation and updates the apollo cache after creating a message
+  useMessageCreated({ chatId }); // triggers a websocket subscription to new messages in this chat and updates the Apollo cache when a new message is created
+  const { data: messages } = useGetMessages({ chatId }); // subscribes to the chatId messages data in Apollo cache. When the cache is updated, Apollo automatically notifies all components using that data
   const divRef = useRef<HTMLDivElement>(null); // atatch a component ref to the div
   // works very similarly to usePath, but is more idiomatic in React Router v6 since we are inside of the Router context
   // Chat.tsx is rendered by the Router, so we can use useLocation to get the current location
   const location = useLocation();
-  
-  useMessageCreated({ chatId }); // subscribe to new messages
-  
+
   const scrollToBottom = () =>
     divRef.current?.scrollIntoView({ behavior: "smooth" });
 
-  useEffect(() => {
-    // when a new message is created, initialize the messages state if it's empty, otherwise append the new message to the existing messages
-    if (existingMessages) {
-      setMessages(existingMessages.messages);
-    }
-  }, [existingMessages]);
+  // useEffect(() => {
+  //   // when a new message is created, initialize the messages state if it's empty, otherwise append the new message to the existing messages
+  //   if (messages) {
+  //     setMessages(messages.messages);
+  //   }
+  // }, [messages]);
 
   // useEffect(() => {
   //   const existingLatestMessage = messages[messages.length - 1]?._id;
@@ -63,42 +62,48 @@ const Chat = () => {
 
   const handleCreateMessage = async () => {
     // execute a mutation to create a new message
-    await createMessage({
-      variables: { createMessageInput: { content: message, chatId } },
-    });
-    setMessage("");
-    scrollToBottom();
+    if (message) {
+      await createMessage({
+        variables: { createMessageInput: { content: message, chatId } },
+      });
+      setMessage("");
+      scrollToBottom();
+    }
   };
 
   return (
     <Stack sx={{ height: "100%", justifyContent: "space-between" }}>
       <h1>{data?.chat.name}</h1>
       <Box sx={{ maxHeight: "70vh", overflowY: "auto" }}>
-        {[...messages]
-          .sort(
-            (messageA, messageB) =>
-              new Date(messageA.createdAt).getTime() -
-              new Date(messageB.createdAt).getTime()
-          )
-          .map((message) => (
-            <Grid container alignItems={"center"} marginBottom='1rem'>
-              <Grid size={{ xs: 2, lg: 1 }}>
-                <Avatar src='' sx={{ width: 52, height: 52 }} />
-              </Grid>
-              <Grid size={{ xs: 10, lg: 11 }}>
-                <Stack>
-                  <Paper sx={{ width: "fit-content" }}>
-                    <Typography sx={{ padding: "0.9rem" }}>
-                      {message.content}
+        {messages &&
+          [...messages.messages]
+            .sort(
+              (messageA, messageB) =>
+                new Date(messageA.createdAt).getTime() -
+                new Date(messageB.createdAt).getTime()
+            )
+            .map((message) => (
+              <Grid container alignItems={"center"} marginBottom='1rem'>
+                <Grid size={{ xs: 2, lg: 1 }}>
+                  <Avatar src='' sx={{ width: 52, height: 52 }} />
+                </Grid>
+                <Grid size={{ xs: 10, lg: 11 }}>
+                  <Stack>
+                    <Paper sx={{ width: "fit-content" }}>
+                      <Typography sx={{ padding: "0.9rem" }}>
+                        {message.content}
+                      </Typography>
+                    </Paper>
+                    <Typography
+                      variant='caption'
+                      sx={{ marginLeft: "0.25rem" }}
+                    >
+                      {new Date(message.createdAt).toLocaleTimeString()}
                     </Typography>
-                  </Paper>
-                  <Typography variant='caption' sx={{ marginLeft: "0.25rem" }}>
-                    {new Date(message.createdAt).toLocaleTimeString()}
-                  </Typography>
-                </Stack>
+                  </Stack>
+                </Grid>
               </Grid>
-            </Grid>
-          ))}
+            ))}
         <div ref={divRef}></div>
       </Box>
       <Paper
