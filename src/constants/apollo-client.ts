@@ -9,8 +9,6 @@ import { getMainDefinition } from "@apollo/client/utilities";
 
 const logoutLink = onError((error) => {
   // we have access to all GraphQL errors
-  console.log("onError");
-  console.log(error);
   if (
     error.graphQLErrors?.length &&
     error.graphQLErrors[0]?.extensions?.originalError &&
@@ -31,17 +29,44 @@ const wsLink = new GraphQLWsLink(
 );
 
 // Link to direct operations to different links
-const splitLink = split(({query}) => {
-  const definition = getMainDefinition(query);
-  return (
-    definition.kind === 'OperationDefinition' &&
-    definition.operation === 'subscription'
-  )
-}, wsLink, httpLink);
+const splitLink = split(
+  ({ query }) => {
+    const definition = getMainDefinition(query);
+    return (
+      definition.kind === "OperationDefinition" &&
+      definition.operation === "subscription"
+    );
+  },
+  wsLink,
+  httpLink
+);
 
 const client = new ApolloClient({
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache(
+    {
+    typePolicies: {
+      Query: {
+        fields: {
+          chats: {
+            keyArgs: false,
+            merge(existing = [], incoming, { args }) {
+              const merged = existing ? existing.slice(0) : [];
+              for (let i = 0; i < incoming.length; ++i) {
+                merged[args!.skip + i] = incoming[i];
+              }
+              return merged;
+            },
+          },
+        },
+      },
+    },
+  }
+),
   link: logoutLink.concat(splitLink), // combine the error link with the splitLink
 });
+
+const merge = () => {
+  
+}
 
 export default client;

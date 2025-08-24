@@ -20,7 +20,7 @@ export class ChatsService {
 
   async findMany(
     prePipelineStages: PipelineStage[] = [],
-    paginationArgs: PaginationArgs,
+    paginationArgs?: PaginationArgs,
   ) {
     const chats = await this.chatsRepository.model.aggregate([
       ...prePipelineStages,
@@ -31,15 +31,15 @@ export class ChatsService {
               '$messages',  // if the messages field exists (the chat has messages)
               { $arrayElemAt: ['$messages', -1] },  // return the last message
               {
-                $createdAt: new Date(),  // create the date of the chat
+                createdAt: new Date(),  // create the date of the chat
               },
             ],
           },
         },
       },
       { $sort: { 'latestMessage.createdAt': -1 } },
-      { $skip: paginationArgs.skip },
-      { $limit: paginationArgs.limit },
+      { $skip: paginationArgs!.skip },
+      { $limit: paginationArgs!.limit },
       { $unset: 'messages' },
       {
         $lookup: {
@@ -68,11 +68,9 @@ export class ChatsService {
   }
 
   async findOne(_id: string) {
-    console.log('chatid:', _id);
     const chats = await this.findMany([
       { $match: { chatId: new Types.ObjectId(_id) } }, // prePipelineStages variable of findMany, only return the latestMessage of the given chat
     ]);
-    console.log('chats', chats);
     if (!chats[0]) {
       throw new NotFoundException(`No chat was found with ID ${_id}`);
     }

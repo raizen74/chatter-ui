@@ -17,7 +17,6 @@ interface ChatListAddProps {
 }
 
 const ChatListAdd = ({ open, handleClose }: ChatListAddProps) => {
-  console.log("ChatListAdd rendered");
   const [error, setError] = useState("");
   const [name, setName] = useState("");
   const [createChat] = useCreateChat();

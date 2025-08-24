@@ -20,7 +20,6 @@ export class UsersService {
         password: await this.hashPassword(createUserInput.password),
       });
     } catch (err) {
-      // console.log(err);
       if (err.message.includes('E11000')) {
         throw new UnprocessableEntityException('Email already exists.');  // respond with a custom error to the UI client.
       }

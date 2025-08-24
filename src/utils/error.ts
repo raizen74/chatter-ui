@@ -1,7 +1,6 @@
 export const extractErrorMessage = (err: any): string | undefined => {
   const errorMessage = err.graphQLErrors[0]?.extensions?.originalError?.message;
   // return "Hello";
-  console.log("Error message:", errorMessage);
   if (!errorMessage) {
     return;
   }

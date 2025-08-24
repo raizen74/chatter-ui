@@ -6,7 +6,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 export class ChatsController {
   constructor(private readonly chatsService: ChatsService) {}
 
-  @Get('chats')
+  @Get('count')
   @UseGuards(JwtAuthGuard)
   async countChats() {
     return this.chatsService.countChats();

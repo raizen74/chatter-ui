@@ -43,7 +43,6 @@ import { AuthService } from './auth/auth.service';
                 throw new UnauthorizedException();
               }
               const { connectionParams, extra } = context;
-              console.log('Client connected for subscriptions.');
               // You can perform authentication here using connectionParams if needed
             },
           }, // listen for GraphQL subscriptions on /graphql

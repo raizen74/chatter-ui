@@ -2,7 +2,7 @@
 
 - React UI + Material UI and Apollo Client (cache)
 - NestJS + Apollo GraphQL server
-- MongoDB
+- MongoDB as persistence layer, aggregations and pagination
 
 ## Front
 
@@ -12,10 +12,12 @@
 - `Chat.tsx`:
   1. When you call the `useCreateMessage` hook (inside `handleCreateMessage`), you execute a mutation (`CreateMessage`) to create a new message. In your `useCreateMessage` hook, you have an update function that **manually updates the Apollo client cache**: it reads the current messages from the cache, adds the new message, and writes the updated array back to the cache.
   2. The `useMessageCreated` hook performs GraphQL websocket subscription and **manually updates the Apollo client cache** every time a new message is received.
-  3. The `useGetMessages` hook in your Chat component is **subscribed to the messages data in the Apollo cache**. It retrieves the current `messages` in the cache automatically when the cache is updated.
+  3. (Moved to `ChatList.tsx`) `useGetMessages` hook in your Chat component is **subscribed to the messages data in the Apollo cache**. It retrieves the current `messages` in the cache automatically when the cache is updated.
   4. React re-renders the Chat component with the new messages array, so the new message appears in the UI immediately—without a page refresh or manual fetch.
 
 - Update the Apollo Client cache for every `latestMessage` send to the chat and received from the websocket connection to automatically display it in the `ChatListItem` as well as the `user.name` of the sender
+
+- `ChatList.tsx` **react-infinite-scroller**, implement infinite scrolling with pagination to fetch more chats. Implement cache policies in apollo client to define the merge behavior of the `chats` cache field. When you scroll down the Box component, a new query is sent to the `chats` resolver to fetch the next batch of chats, its sorted in the mongodb aggregation and returned in the correct order to be consumed in the `data` variable.
 
 ## Back
 

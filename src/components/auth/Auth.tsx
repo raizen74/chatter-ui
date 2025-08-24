@@ -20,7 +20,6 @@ const Auth = ({ submitLabel, onSubmit, children, error, extraFields }: AuthProps
   // triggered by client.refetchQueries in useLogin.ts
   useEffect(() => {
     if (data) {
-      console.log('useEffect')
       // check if user is already logged in
       navigate("/"); // redirect to home if user is logged in
     }

@@ -29,7 +29,6 @@ const Signup = () => {
         />,
       ]}
       onSubmit={async ({ email, password }) => {
-        console.log(email, password);
         try {
           await createUser({
             variables: {
@@ -52,9 +51,11 @@ const Signup = () => {
         }
       }}
     >
-      <Link to={"/login"} style={{ alignSelf: "center" }}>
-        <MUILink>Login</MUILink>
-      </Link>
+      {/* <Link to={"/login"} style={{ alignSelf: "center" }}> */}
+      <MUILink component={Link} to='/login' style={{ alignSelf: "center" }}>
+        Login
+      </MUILink>
+      {/* </Link> */}
     </Auth>
   );
 };

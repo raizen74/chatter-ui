@@ -28,7 +28,6 @@ const Guard = ({ children }: GuardProps) => {
     }
   }, [error]);
 
-  console.log("Logged user: ", user);
   // check if the current route is excluded with JS window object
   // and only render children (<RouterProvider router={router} />) if user is authenticated or route is not excluded
   return (

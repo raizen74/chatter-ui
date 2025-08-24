@@ -15,7 +15,6 @@ const messageCreatedDocument = graphql(`
 export const useMessageCreated = (
   variables: SubscriptionMessageCreatedArgs
 ) => {
-  console.log("useMessageCreated subscription hook");
   return useSubscription(messageCreatedDocument, {
     variables,
     onData: ({ client, data }) => {  // callback function called when a message is published to the subscription

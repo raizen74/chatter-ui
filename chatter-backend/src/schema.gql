@@ -31,7 +31,7 @@ type Query {
   users: [User!]!
   user(_id: String!): User!
   me: User!
-  chats: [Chat!]!
+  chats(skip: Int!, limit: Int!): [Chat!]!
   chat(_id: String!): Chat!
   messages(chatId: String!): [Message!]!
 }
