@@ -6,6 +6,7 @@ import { Chat } from './entities/chat.entity';
 import { ChatSchema } from './entities/chat.document';
 import { ChatsRepository } from './chats.repository';
 import { MessagesModule } from './messages/messages.module';
+import { ChatsController } from './chats.controller';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { MessagesModule } from './messages/messages.module';
     forwardRef(() => MessagesModule),  // Its part of the application's chat functionality, so we import it here
   ],
   providers: [ChatsResolver, ChatsService, ChatsRepository],
-  exports: [ChatsRepository], // Exporting the repository for use in the messages module when we import this module
+  exports: [ChatsRepository],
+  controllers: [ChatsController], // Exporting the repository for use in the messages module when we import this module
 })
 export class ChatsModule {}

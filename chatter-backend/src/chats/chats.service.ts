@@ -3,6 +3,7 @@ import { CreateChatInput } from './dto/create-chat.input';
 import { UpdateChatInput } from './dto/update-chat.input';
 import { ChatsRepository } from './chats.repository';
 import { PipelineStage, Types } from 'mongoose';
+import { PaginationArgs } from 'src/common/dto/pagination-args.dto';
 
 @Injectable()
 export class ChatsService {
@@ -11,19 +12,38 @@ export class ChatsService {
   async create(createChatInput: CreateChatInput, userId: string) {
     // Creates the chat document providing userId, name and messages
     return this.chatsRepository.create({
-      ...createChatInput,  // name
+      ...createChatInput, // name
       userId,
       messages: [], // Initialize messages as an empty array
     });
   }
 
-  async findMany(prePipelineStages: PipelineStage[] = []) {
+  async findMany(
+    prePipelineStages: PipelineStage[] = [],
+    paginationArgs: PaginationArgs,
+  ) {
     const chats = await this.chatsRepository.model.aggregate([
       ...prePipelineStages,
-      { $set: { latestMessage: { $arrayElemAt: ['$messages', -1] } } },
+      {
+        $set: {
+          latestMessage: {
+            $cond: [
+              '$messages',  // if the messages field exists (the chat has messages)
+              { $arrayElemAt: ['$messages', -1] },  // return the last message
+              {
+                $createdAt: new Date(),  // create the date of the chat
+              },
+            ],
+          },
+        },
+      },
+      { $sort: { 'latestMessage.createdAt': -1 } },
+      { $skip: paginationArgs.skip },
+      { $limit: paginationArgs.limit },
       { $unset: 'messages' },
       {
-        $lookup: {  // retrieve the user from users database that has sent the latestMessage
+        $lookup: {
+          // retrieve the user from users database that has sent the latestMessage
           from: 'users',
           localField: 'latestMessage.userId',
           foreignField: '_id',
@@ -40,19 +60,23 @@ export class ChatsService {
       delete chat.latestMessage.userId;
       chat.latestMessage.chatId = chat._id;
     });
-    return chats  // fullfill the [Chat] GraphQL entity type, returned by chats.resolver
+    return chats; // fullfill the [Chat] GraphQL entity type, returned by chats.resolver
+  }
+
+  async countChats() {
+    return this.chatsRepository.model.countDocuments({}); // return the number of chats
   }
 
   async findOne(_id: string) {
-    console.log("chatid:", _id)
+    console.log('chatid:', _id);
     const chats = await this.findMany([
-      { $match: { chatId: new Types.ObjectId(_id) } },  // prePipelineStages variable of findMany, only return the latestMessage of the given chat
+      { $match: { chatId: new Types.ObjectId(_id) } }, // prePipelineStages variable of findMany, only return the latestMessage of the given chat
     ]);
-    console.log('chats', chats)
+    console.log('chats', chats);
     if (!chats[0]) {
       throw new NotFoundException(`No chat was found with ID ${_id}`);
     }
-    return chats[0];  // Chat entity
+    return chats[0]; // Chat entity
   }
 
   // userChatFilter(userId: string) {
