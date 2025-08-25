@@ -27,7 +27,8 @@ export class ChatsResolver {
   async findAll(@Args() paginationArgs: PaginationArgs): Promise<Chat[]> {
     return this.chatsService.findMany([], paginationArgs);
   }
-
+  
+  @UseGuards(GqlAuthGuard) // Only authenticated users can create chats
   @Query(() => Chat, { name: 'chat' })
   async findOne(@Args('_id') _id: string): Promise<Chat> {
     return this.chatsService.findOne(_id);
