@@ -5,7 +5,7 @@ import { ChatQueryVariables } from "../gql/graphql";
 const getChatDocument = graphql(`
   query Chat($_id: String!) {
     chat(_id: $_id) {
-      ...ChatFragment
+      name
     }
   }
 `);

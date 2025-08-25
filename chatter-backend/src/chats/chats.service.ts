@@ -70,7 +70,7 @@ export class ChatsService {
   async findOne(_id: string) {
     console.log(_id)
     const chats = await this.chatsRepository.model.aggregate([
-      { $match: { _id: new Types.ObjectId(_id) } }, // prePipelineStages variable of findMany, only return the latestMessage of the given chat
+      { $match: { _id: new Types.ObjectId(_id) } },  // get the chatDocument
     ]);
     if (!chats[0]) {
       throw new NotFoundException(`No chat was found with ID ${_id}`);
