@@ -30,11 +30,11 @@ export class MessagesService {
     // search the chatId and update its messages array
     await this.chatsRepository.findOneAndUpdate(
       {
-        _id: chatId,  // filterQuery in AbstractRepository
+        _id: chatId, // filterQuery in AbstractRepository
         // ...this.chatsService.userChatFilter(userId), // Ensures the user is allowed to push messages
       },
       {
-        $push: { messages: messageDocument },  // update parameter in AbstractRepository
+        $push: { messages: messageDocument }, // update parameter in AbstractRepository
       },
     ); // The first argument is the filter query, which tells mongodb which document to update
     // construct the Message object
@@ -47,11 +47,23 @@ export class MessagesService {
     return message; // Return the created message
   }
 
-  async getMessages({ chatId }: GetMessagesArgs) {
-    return this.chatsRepository.model.aggregate([  // aggregation pipeline, transforms a chatDocument to a chat entity
+  async countMessages(chatId: string) {
+    return (await this.chatsRepository.model.aggregate([
+      // aggregation pipeline, transforms a chatDocument to a chat entity
+      { $match: { _id: new Types.ObjectId(chatId) } },
+      { $unwind: '$messages' }, // transforms every message in the array to a separate document in the aggregation pipeline
+      { $count: 'messages' },
+    ]))[0];
+  }
+
+  async getMessages({ chatId, skip, limit }: GetMessagesArgs) {
+    return this.chatsRepository.model.aggregate([
       { $match: { _id: new Types.ObjectId(chatId) } },
       { $unwind: '$messages' },
       { $replaceRoot: { newRoot: '$messages' } },
+      { $sort: { createdAt: -1 } },
+      { $skip: skip },
+      { $limit: limit },
       {
         $lookup: {
           from: 'users',

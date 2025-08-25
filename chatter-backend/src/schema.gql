@@ -33,7 +33,7 @@ type Query {
   me: User!
   chats(skip: Int!, limit: Int!): [Chat!]!
   chat(_id: String!): Chat!
-  messages(chatId: String!): [Message!]!
+  messages(skip: Int!, limit: Int!, chatId: String!): [Message!]!
 }
 
 type Mutation {
