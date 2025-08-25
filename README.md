@@ -19,6 +19,8 @@
 
 - `ChatList.tsx` **react-infinite-scroller**, implement infinite scrolling with pagination to fetch more chats. Implement cache policies in apollo client to define the merge behavior of the `chats` cache field. When you scroll down the Box component, a new query is sent to the `chats` resolver to fetch the next batch of chats, its sorted in the mongodb aggregation and returned in the correct order to be consumed in the `data` variable.
 
+- `Chat.tsx` **react-infinite-scroller**, implement reverse infinite scrolling with pagination to fetch more chat messages. Implement cache policies in apollo client to define the merge behavior of the `messages` cache field for each `chatId`
+
 ## Back
 
 GraphQL `users.resolver.ts` forwards the query to the `UsersService` which calls `UsersRepository` that extends `AbstractEntityRepository` that performs CRUD on MongoDB with mongoose ORM
@@ -34,4 +36,6 @@ GraphQL subscriptions mantain a persistent websocket connection to keep pushing 
 
 Pushed messages are filtered by `chatId` and not sent to the sender (`userId`)
 
-ReModel the `ChatDocument` MongoDB schema as an aggregation of `MessageDocument` and execute **MongoDB aggregations** in the chats and messages service layers to operate these schemas
+ReModel the `ChatDocument` MongoDB schema as an aggregation of `MessageDocument` and execute **MongoDB aggregations in the chats and messages service layers** to operate these schemas
+
+Implement `/chats/count` and `/messages/count` REST endpoints with **NestJS controllers**

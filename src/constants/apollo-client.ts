@@ -42,31 +42,31 @@ const splitLink = split(
 );
 
 const client = new ApolloClient({
-  cache: new InMemoryCache(
-    {
+  cache: new InMemoryCache({
     typePolicies: {
       Query: {
         fields: {
           chats: {
-            keyArgs: false,
-            merge(existing = [], incoming, { args }) {
-              const merged = existing ? existing.slice(0) : [];
-              for (let i = 0; i < incoming.length; ++i) {
-                merged[args!.skip + i] = incoming[i];
-              }
-              return merged;
-            },
+            keyArgs: false,  // will not cache any separate results based on the fields args (There is only 1 query to chats)
+            merge,
+          },
+          messages: {
+            keyArgs: ["chatId"],  // mantain a separate messages cache for each chat, but NOT for skip and limit params
+            merge,
           },
         },
       },
     },
-  }
-),
+  }),
   link: logoutLink.concat(splitLink), // combine the error link with the splitLink
 });
 
-const merge = () => {
-  
+function merge(existing: any, incoming: any, { args }: any) {
+  const merged = existing ? existing.slice() : [];  // .slice returns a new array as shallow copy (holds references)
+  for (let i = 0; i < incoming.length; ++i) {
+    merged[args!.skip + i] = incoming[i];
+  }
+  return merged;
 }
 
 export default client;
