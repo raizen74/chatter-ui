@@ -1,8 +1,17 @@
 # Real-time chat web application
 
+<!-- !["Chatter"](./img/chatter.png) -->
+<img src="./img/chatter.png" width="50%" alt="Chatter app logo"/>
+
 - React UI + Material UI and Apollo Client (cache)
 - NestJS + Apollo GraphQL server
 - MongoDB as persistence layer, aggregations and pagination
+
+## Usage
+
+- You need MongoDB running on your computer.
+- Start NestJS backend server: `cd ./chatter-backend && nest start`
+- Start the React application: `yarn start`
 
 ## Front
 
@@ -25,6 +34,8 @@
 
 GraphQL `users.resolver.ts` forwards the query to the `UsersService` which calls `UsersRepository` that extends `AbstractEntityRepository` that performs CRUD on MongoDB with mongoose ORM
 
+Create a **unique index** in the `users` collection on the `email` field to prevent duplicate emails using database migrations
+
 Strategies are a concept of the `passport` library.
 Guards are called before the route is called. Guards need to be changed a bit to work with GraphQL, check `gql-auth.guard.ts`
 
@@ -34,8 +45,10 @@ Guards are called before the route is called. Guards need to be changed a bit to
 
 GraphQL subscriptions mantain a persistent websocket connection to keep pushing updates to the UI client, when a user enters a chat it stablishes a websocket connection using the `chatId`
 
-Pushed messages are filtered by `chatId` and not sent to the sender (`userId`)
+Published messages to GraphQL are filtered by `chatId` and not sent to the sender (`userId`) subscription.
 
 ReModel the `ChatDocument` MongoDB schema as an aggregation of `MessageDocument` and execute **MongoDB aggregations in the chats and messages service layers** to operate these schemas
 
 Implement `/chats/count` and `/messages/count` REST endpoints with **NestJS controllers**
+
+Implement pagination with MongoDB aggregations in **chats and messages service layers**
