@@ -9,7 +9,7 @@
 
 ## Usage
 
-- You need MongoDB running on your computer.
+- You need MongoDB running on `mongodb://127.0.0.1:27017/chatter`. Alternatively, you can use **MongoDB Atlas** and provide the conection string to `MONGODB_URI` variable in `./chatter-backend/.env`
 - Start NestJS backend server: `cd ./chatter-backend && nest start`
 - Start the React application: `yarn start`
 
